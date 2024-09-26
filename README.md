@@ -33,6 +33,101 @@ SecureChat keeps track of all sent and received messages in log files (both on t
 
 ### 1. Setting Up
 
+### Step 1: Create a JSON File with User Information
+
+The application expects a JSON file containing user details such as `username`, `password`, `IP`, and `port`. An example format is shown below:
+
+```json
+[
+    {
+        "username": "user1",
+        "password": "password1",
+        "ip": "127.0.0.1",
+        "port": 12345
+    },
+    {
+        "username": "user2",
+        "password": "password2",
+        "ip": "127.0.0.1",
+        "port": 12346
+    }
+]
+```
+
+###Step 2: Start the Application
+Run the following command to start the application:
+
+```json
+python secure_chat.py
+```
+### Step 3: Input Prompt
+You will be prompted to enter the path to the JSON file.
+Then, select whether you want to send or receive a message:
+- **To send a message, input the recipient's username or IP and port.
+- **To receive a message, ensure the correct port is used for your user.
+2. Authentication Flow
+
+The sender initiates the connection with a "hello" message.
+The server responds by sending a Diffie-Hellman (DH) public key.
+After deriving the shared key, the server sends a challenge message.
+The client computes a response using a SHA256 hash of the challenge and the password, which the server verifies.
+Mutual authentication is completed when the client verifies the server's response to its challenge.
+3. Encryption and Decryption
+
+Once authentication is successful, message transmission begins.
+All messages are encrypted using AES with a derived key from the DH key exchange.
+Messages are padded to align with block size requirements.
+4. Message Logging
+
+Each sent or received message is logged along with an HMAC for integrity verification.
+Logs:
+Server logs are saved in logging.txt.
+Client logs are saved in clientlogging.txt.
+Example Scenario
+The sender inputs the recipient's username or IP address.
+The server listens for incoming connections on the specified port.
+Both parties authenticate using Diffie-Hellman and mutual HMAC validation.
+Messages are encrypted and securely transmitted.
+Each message, along with its HMAC, is logged for data integrity verification.
+5. Security Considerations
+
+Key Exchange
+The Diffie-Hellman key exchange ensures the shared encryption key is never transmitted over the network, minimizing the risk of interception.
+
+Message Integrity
+CRC32 and HMAC are used to ensure message integrity and to verify that logs remain untampered.
+
+Mutual Authentication
+The challenge-response mechanism ensures that only authorized users can communicate, providing protection against replay and man-in-the-middle attacks.
+
+6. Dependencies
+
+The following Python libraries are required:
+
+pycryptodome: Provides AES encryption and HMAC for message authentication.
+cryptography: Used for Diffie-Hellman key exchange and other cryptographic utilities.
+socket: Python's built-in library for networking.
+json: Built-in library for working with JSON data.
+zlib: Built-in library for generating CRC32 checksums.
+Install dependencies
+Run the following command to install the required dependencies:
+
+bash
+Copy code
+pip install pycryptodome cryptography
+7. Future Enhancements
+
+GUI Implementation: Develop a graphical user interface to replace the command-line interface.
+Additional Encryption Modes: Support for more encryption protocols such as GCM for authenticated encryption.
+Group Messaging: Allow multiple users to participate in the same chat session with end-to-end encryption.
+8. References
+
+Krawczyk, H. (2010). Cryptographic Extraction and Key Derivation: The HKDF Scheme. Advances in Cryptology – CRYPTO 2010, 631–648. https://doi.org/10.1007/978-3-642-14623-7_34
+PyCryptodome Documentation
+Cryptography.io Documentation
+
+
+
 - Make sure you have the following libraries installed:
   ```bash
   pip install pycryptodome cryptography
